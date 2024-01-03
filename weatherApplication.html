@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Bilbo+Swash+Caps&family=Concert+One&family=Creepster&family=East+Sea+Dokdo&family=IBM+Plex+Sans:wght@300&family=Lato&family=Love+Light&family=Love+Ya+Like+A+Sister&family=Loved+by+the+King&family=Lovers+Quarrel&family=Montserrat&family=Newsreader&family=Pacifico&family=Playfair+Display&family=Playfair+Display+SC&family=Poppins&family=Rampart+One&family=Roboto&family=Roboto+Flex:wght@800&display=swap" rel="stylesheet">
+	<!-- boxicons cdn link -->
+	<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+	 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"/>
+
+
+	<title>Weather Application</title>
+	<style>
+		*
+		{
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+			letter-spacing: 0.4px;
+			font-family: 'Lato', sans-serif;
+		}
+		:root
+		{
+			--main-background:#D7C0FF;
+		}
+		html
+		{
+			overflow-x: hidden;
+			scroll-behavior: smooth;
+		}
+		body
+		{
+			background: var(--main-background);
+			background: linear-gradient(rgba(0,0,0,0.0),rgba(0,0,0,0.0)),url('https://img.freepik.com/free-vector/aesthetic-purple-sky-background-vector-glitter-clouds-design_53876-157556.jpg?size=626&ext=jpg&ga=GA1.2.969831894.1654975018&semt=ais');
+			background-size: cover;
+			object-fit: cover;
+			background-repeat: no-repeat;
+			height: 100vh;
+			overflow-x: hidden;
+		}
+		.container
+		{
+			width: 100%;
+			height: 100%;
+		}
+		.frontpage
+		{
+/*			background: red;*/
+			display: flex;
+			align-items: center;
+/*			justify-content: center;*/
+			flex-direction: column;
+			height: 100vh;
+			background:linear-gradient(rgba(150,0,0,0.1),rgba(150,0,0,0.1)),url('https://img.freepik.com/free-photo/3d-cartoon-background-children_23-2150473140.jpg?size=626&ext=jpg&ga=GA1.1.969831894.1654975018&semt=ais');
+			background-size: cover;
+			object-fit: cover;
+			background-repeat: no-repeat;
+			width: 100%;
+			margin: auto;
+			transition: 0.8s ease;
+/*			display: none;*/
+		}
+		.frontpage.active
+		{
+			transform:translateX(-100%);
+		}
+		.weather-front-image
+		{
+			max-width: 150px;
+			object-fit: cover;
+		}
+		.frontpage-contents
+		{
+			margin: 120px 15px 15px 15px ;
+			border-radius: 15px;
+			backdrop-filter: blur(10px);
+			width: 80%;
+			text-align: center;
+			padding:50px 10px;
+			position: relative;
+			z-index: 1;
+			color: white;
+
+		}
+		.frontpage-contents::before
+		{
+			content: "";
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			backdrop-filter: blur(15px);
+			border-radius: 15px;
+			z-index: -1;
+			border:1px solid rgba(255,255,255,0.3);
+			box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.4), -3px -3px 5px rgba(255, 255, 255, 0.2);
+		}
+		.frontpage-contents h2
+		{
+			width: 200px;
+			font-size: 25px;
+			margin: 20px auto;
+		}
+		.getting-started-btn
+		{
+			font-size: 15px;
+			padding: 10px 30px;
+			border-radius: 35px;
+/*			background: linear-gradient(130deg,greenyellow,pink,cyan);*/
+			font-weight: bold;
+			color: black;
+			border: none;
+			margin-bottom: 20px;
+			position: relative;
+			z-index: 1;
+			overflow: hidden;
+			transition: 0.3s ease;
+			cursor: pointer;
+		}
+		.getting-started-btn:hover
+		{
+			background: black;
+			color: white;
+		}
+		.getting-started-btn::before
+		{
+			position: absolute;
+			content: "";
+			top:0;
+			left: 0;
+			width: 100%;
+			height: 400%;
+			z-index: -1;
+			background: linear-gradient(130deg,greenyellow,pink,cyan);
+			border-radius: 100px;
+			animation: btnanim 3s linear infinite;
+		}
+		@keyframes btnanim
+		{
+			0%
+			{
+				transform: rotate(0);
+			}
+			100%
+			{
+				transform: rotate(360deg);
+			}
+		}
+		.weatherInput
+		{
+			padding: 10px;
+			display: flex;
+			align-items: center;
+			justify-content:center;
+			flex-direction: column;
+			line-height: 1.5;
+			text-align: center;
+		}
+	
+		.weatherInputField
+		{
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			margin: 20px auto 10px auto;
+			padding: 7px 12px 7px 10px;
+			border:none;
+			background: white;
+			width: 90%;
+			border-radius: 5px;
+			column-gap: 4px;
+		}
+		.weatherInputField input
+		{
+			font-size: 15px;
+			width: 100%;
+			outline: none;
+			background: none;
+			border:none;
+		}
+		.searchBtn
+		{
+			font-size: 14px;
+			padding: 10px 15px;
+/*			background: linear-gradient(130deg,greenyellow,pink,cyan);*/
+			background:white;
+			box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+			border-radius: 5px;
+			border:none;
+			font-weight: bold;
+			letter-spacing: 0.6px;
+			overflow: hidden;
+			position: relative;
+			z-index: 1;
+			width:120px;
+			transition: 0.2s ease;
+		}
+		.searchBtn:hover
+		{
+			background: black;
+		}
+		.searchBtn::before
+		{
+			position: absolute;
+			content: "";
+			top:10px;
+			left: 0;
+			width: 100%;
+			height: 200%;
+			z-index: -1;
+			background: linear-gradient(130deg,greenyellow,pink,cyan);
+			border-radius: 100px;
+			animation: btnanim2 3s linear infinite;
+		}
+		@keyframes btnanim2
+		{
+			0%
+			{
+				transform: rotate(0);
+			}
+			100%
+			{
+				transform: rotate(-360deg);
+			}
+		}
+		.location-content
+		{
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			column-gap: 4px;
+			margin: 10px auto;
+			color:darkviolet;
+		}
+		.weather-Degree
+		{
+			position: relative;
+		}
+		.weather-Degree h1
+		{
+			font-size: 80px;
+			-webkit-text-stroke:2px;
+			-webkit-text-color:white;
+			letter-spacing: 0.8px;
+			color: darkviolet;
+		}
+		.weather-Degree-img
+		{
+			max-width: 150px;
+			object-fit: cover;
+			position: absolute;
+			bottom:0;
+			right: -70px;
+			animation: imganim 2s linear infinite;
+		}
+		@keyframes imganim
+		{
+			0%
+			{
+				bottom:0;
+			}
+			50%
+			{
+				bottom:20px;
+			}
+			100%
+			{
+				bottom:0;
+			}
+		}
+		.weather-Degree h2
+		{
+			margin-bottom: 5px;
+			color: white;
+			letter-spacing: 0.8px;
+			text-transform: capitalize;
+		}
+		.weather-pallete
+		{
+			width: 95%;
+			background: white;
+			padding: 15px 10px;
+			border-radius: 5px;
+			margin: 20px auto;
+			display: flex;
+			align-items: center;
+			justify-content: space-around;
+		}
+		.pallete-data
+		{
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			flex-direction: column;
+			text-align: center;
+		}
+		.pallete-data i
+		{
+			margin-bottom: 5px;
+			background: darkviolet;
+			border-radius: 50%;
+			width: 30px;
+			height: 30px;
+			color: white;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+		.pallete-data small
+		{
+			font-weight: bold;
+			letter-spacing: 0.7px;
+		}
+		.pallete-data span
+		{
+			font-size: 14px;
+		}
+		.weather-forecasts
+		{
+			width: 90%;
+			margin: auto;
+/*			background: red;*/
+		}
+		.weather-forecasts h3
+		{
+			padding:0px 10px;
+
+		}
+		.weather-ul .weather-data
+		{
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			flex-flow: column;
+			background:rgba(255,255,255,0.4);
+			box-shadow: 5px 5px 2px rgba(0, 0, 0, 0.1);
+			border:1px solid white;
+			border-radius: 35px;
+			width: 20%;
+			margin: 30px auto 20px auto;
+			padding: 10px;
+			position: relative;
+			z-index: 1;
+			text-align: center;
+		}
+		.forecast-img
+		{
+			width: 80px;
+			object-fit: cover;
+		}
+		.icon-overlay
+		{
+			width: 30px;
+			height: 30px;
+			background: rgba(0,0,0,0.12);
+			box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
+			position: absolute;
+			top:57%;
+			left: 50%;
+			border-radius: 50%;
+			transform: translate(-50%,-50%);
+			z-index: -1;
+		}
+		.weather-data span
+		{
+			font-weight: bold;
+			font-size: 13px;
+			margin-top: 2px;
+			background: white;
+			padding: 10px;
+			border-radius: 35px;
+		}
+		.weather-data small
+		{
+			font-weight: bold;
+			font-size: 15px;
+			margin-bottom: 5px;
+		}
+		.swiper
+		{
+			width: 85%;
+			margin: auto;
+			padding:0 5px 0 5px;
+		}
+		.weather-container
+		{
+			transform: translateY(0);
+			transition: 0.8s ease;
+			width: 100%;
+			height: 100%;
+			display: none;
+			animation: divanim 1.5s ease-in-out;
+/*			transition-delay:2s;*/
+			opacity: 0;
+		}
+		@keyframes divanim
+		{
+			0%
+			{
+				transform: translateY(0);
+			}
+			100%
+			{
+				transform: translateY(-100%);
+			}
+		}
+		.weather-container.active
+		{
+			transform: translateY(-100%);
+			display: block;
+			opacity: 1;
+		}
+	</style>
+</head>
+<body>
+<div class="container">
+	<div class="frontpage">
+		<div class="frontpage-contents">
+			<img src="https://cdn-icons-png.flaticon.com/512/1779/1779882.png" alt="weather-front-image" class="weather-front-image">
+			<h2>Weather <span style="font-size: 30px;font-weight: 100;">Forecasts</span></h2>
+			<button type="button" name="" class="getting-started-btn">Get Start</button>
+			<p>Check any weather</p>
+		</div>
+	</div>
+<!-- weather input code starts -->
+<div class="weather-container">
+	<div class="weatherInputField">
+			<i class='bx bx-search-alt'></i>
+			<input class="citySearch" type="text" name="" placeholder="Search City...">
+			<button type="button" name="" class="searchBtn">Search</button>
+		</div>
+	<div class="weatherInput">
+		<div class="location-data">
+			<div class="location-content">
+			<i class='bx bxs-map'></i>
+			<h3>-----</h3>
+			</div>
+			<p>Date Month Year</p>
+		</div>
+		<div class="weather-Degree">
+			<h1>--°</h1>
+			<!-- <img src="https://openweathermap.org/img/wn/10n@4x.png" alt="weather-Degree-image" class="weather-Degree-img"> -->
+			<h2>-----</h2>
+		</div>
+		<div class="weather-pallete">
+			<div class="pallete-data">
+				<i class='bx bx-water'></i>
+				<small>-- M/B</small>
+				<span>Pressure</span>
+			</div>
+			<div class="pallete-data">
+				<i class='bx bxs-droplet-half' ></i>
+				<small>-- %</small>
+				<span>Humidity</span>
+			</div>
+			<div class="pallete-data">
+				<i class='bx bx-wind' ></i>
+				<small>-- M/S</small>
+				<span>wind Speed</span>
+			</div>
+		</div>
+	</div>
+<!-- weather input code ends -->
+<!-- weather forecasts code starts -->
+	<div class="swiper mySwiper weather-forecasts">
+		<h3>5 Days Weather Forecast (Slide)</h3>
+		<ul class="swiper-wrapper weather-ul">
+			<li class="swiper-slide weather-data">
+				<span>-- -- --</span>
+				<!-- <img src="http://openweathermap.org/img/wn/09d@2x.png" alt="forecast-image" class="forecast-img"> -->
+				<!-- <div class="icon-overlay"></div> -->
+				<small>--°</small>
+			</li>
+			<li class="swiper-slide weather-data">
+				<span>-- -- --</span>
+				<!-- <img src="http://openweathermap.org/img/wn/09d@2x.png" alt="forecast-image" class="forecast-img"> -->
+				<!-- <div class="icon-overlay"></div> -->
+				<small>--°</small>
+			</li>
+			<li class="swiper-slide weather-data">
+				<span>-- -- --</span>
+				<!-- <img src="http://openweathermap.org/img/wn/09d@2x.png" alt="forecast-image" class="forecast-img"> -->
+				<!-- <div class="icon-overlay"></div> -->
+				<small>--°</small>
+			</li>
+			<li class="swiper-slide weather-data">
+				<span>-- -- --</span>
+				<!-- <img src="http://openweathermap.org/img/wn/09d@2x.png" alt="forecast-image" class="forecast-img"> -->
+				<!-- <div class="icon-overlay"></div> -->
+				<small>--°</small>
+			</li>
+			<li class="swiper-slide weather-data">
+				<span>-- -- --</span>
+				<!-- <img src="http://openweathermap.org/img/wn/09d@2x.png" alt="forecast-image" class="forecast-img"> -->
+				<!-- <div class="icon-overlay"></div> -->
+				<small>--°</small>
+			</li>
+		</ul>
+	</div>
+</div>
+</div>
+<!-- weather forecasts code ends -->
+
+  <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+
+  <!-- Initialize Swiper -->
+  <script defer>
+    var swiper = new Swiper(".mySwiper", {
+      slidesPerView: 3,
+      spaceBetween: 15,
+      freeMode: true,
+    });
+
+//working on weather updates
+    const searchBtn = document.querySelector('.searchBtn');
+    const cityNameInput = document.querySelector('.citySearch');
+    const apiKey = 'b8e6343adb114d2c88af0939f6b1a6c4';
+    const weeks = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    const WeatherDegree = document.querySelector('.weatherInput');
+    const locationData = document.querySelector('.location-data');
+	const weatherPallete = document.querySelector('.weather-pallete');
+	const weatherUL = document.querySelector('.weather-ul');
+
+	const gettingStartedBtn = document.querySelector('.getting-started-btn');
+
+	gettingStartedBtn.addEventListener('click',function(){
+	     document.querySelector('.frontpage').classList.add('active');
+	     document.querySelector('.weather-container').classList.add('active');
+	})
+
+// creating a function named createWeatherCard
+	function createWeatherCard(cityName2, weatherItem2, index2)
+	{
+		if(index2 === 0)
+		{
+			return `
+			<div class="location-data">
+			<div class="location-content">
+			<i class='bx bxs-map'></i>
+			<h3>${cityName2}</h3>
+			</div>
+			<p>${weatherItem2.dt_txt.split(' ')[0]}</p>
+			</div>
+			<div class="weather-Degree">
+			<h1>${(weatherItem2.main.temp - 273.15).toFixed(2)}°</h1>
+			<img src="https://openweathermap.org/img/wn/${weatherItem2.weather[0].icon}@4x.png" alt="weather-Degree-image" class="weather-Degree-img">
+			<h2>${weatherItem2.weather[0].description}</h2>
+			</div>
+			<div class="weather-pallete">
+			<div class="pallete-data">
+				<i class='bx bx-water'></i>
+				<small>${weatherItem2.main.pressure} M/B</small>
+				<span>Pressure</span>
+			</div>
+			<div class="pallete-data">
+				<i class='bx bxs-droplet-half' ></i>
+				<small>${weatherItem2.main.humidity}%</small>
+				<span>Humidity</span>
+			</div>
+			<div class="pallete-data">
+				<i class='bx bx-wind' ></i>
+				<small>${weatherItem2.wind.speed} M/S</small>
+				<span>wind Speed</span>
+			</div>
+			</div>
+			`
+		}
+		else
+		{
+			return `
+			<li class="swiper-slide weather-data">
+				<span>${weatherItem2.dt_txt.split(' ')[0]}</span>
+				<img src="http://openweathermap.org/img/wn/${weatherItem2.weather[0].icon}@2x.png" alt="forecast-image" class="forecast-img">
+				<div class="icon-overlay"></div>
+				<small>${(weatherItem2.main.temp - 273.15).toFixed(2)}°</small>
+			</li>
+			`
+		}
+	}
+
+
+
+//creating a function named gettingWeatherDetails
+    function gettingWeatherDetails(cityWeather, lat, lon)
+    {
+    	const weather_api_url = `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+
+    	fetch(weather_api_url).then(res=>res.json()).then(data=>{
+
+    		const forecastDays = [];
+    		const fiveDaysForecast = data.list.filter(function(forecast){
+    		const forecastdate = new Date(forecast.dt_txt).getDate();
+    		if(!forecastDays.includes(forecastdate))
+    		{
+    			return forecastDays.push(forecastdate);
+    		}
+    		});
+    		console.log(data);
+    		//when weather is fetched the HTML elements is removed and new will be added
+
+    		cityNameInput.value = "";
+    		WeatherDegree.innerHTML = "";
+    		locationData.innerHTML ="";
+			weatherPallete.innerHTML ="";
+			weatherUL.innerHTML = "";
+
+			fiveDaysForecast.forEach(function(weatherItem,index){
+
+				if(index === 0)
+				{
+					WeatherDegree.insertAdjacentHTML('beforeend',createWeatherCard(cityWeather, weatherItem, index));
+				}
+				else
+				{
+					weatherUL.insertAdjacentHTML('beforeend',createWeatherCard(cityWeather, weatherItem, index));
+				}
+			});
+
+
+    	}).catch(() =>{
+    		alert('Error Occured While Fetching the Coordinates of Weather');
+    	});
+    }
+
+//working on search Button 
+    searchBtn.addEventListener('click',function(){
+    	const cityName = cityNameInput.value.trim();//trim to remove extra spaces
+    	if(cityName == "")
+    		{
+    			alert("Please Enter the City Name");
+    			return;
+    		}
+    	else
+    	{
+    		const geocoding_api_url = `http://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=1&appid=${apiKey}`;
+    		fetch(geocoding_api_url).then(res =>res.json()).then(data=>{
+    			if(!data.length) //if you enter wrong keyword or city name
+    			{
+    				return alert(`${cityName} isn't a valid city Name`);
+    			}
+    			else
+    			{
+    				const { name,lat,lon } = data[0]; //storing the value of Name,latitute and value of longitude in data array
+    				gettingWeatherDetails(name, lat, lon);//Now We have to create a function named gettingWeatherDetails
+    			}
+    				
+    			
+    			// console.log(data);
+
+    		}).catch(()=>{
+    			alert("Error Occured While Fetching the Coordinates");
+    		})
+    	}
+    })
+
+  </script>
+</body>
+</html>
+
